@@ -34,7 +34,7 @@ pipeline {
 		   stage("deploy"){
 	   steps{
 
-      sshagent(['tomcat']) {
+      sshagent(['tomcat10']) {
 
 	        sh """
                  
@@ -47,7 +47,7 @@ pipeline {
           """
 
 sshagent(['test']) 
-    // some block
+    // 
 	      
 
 }
