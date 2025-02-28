@@ -46,7 +46,7 @@ pipeline {
           
           """
 
-sshagent(['tomcat']) 
+sshagent(['test']) 
     // 
 	      
 
