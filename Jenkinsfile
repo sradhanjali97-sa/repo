@@ -8,7 +8,7 @@ pipeline {
      stages {
         stage('checkout') {
             steps {
-		  git 'https://github.com/nishankainfo/webapp.git'
+		  git 'https://github.com/sradhanjali97-sa/repo.git'
 				
                 
             }
@@ -27,7 +27,8 @@ pipeline {
         } 
         stage('package') {
             steps {
-                sh 'mvn package'
+                sh 'mvn clean package'
+                 sh "mv target/*.war target/myweb.war"'
             }
         }
     }
