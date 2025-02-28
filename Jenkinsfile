@@ -45,6 +45,8 @@ pipeline {
             
           
           """
+sshagent(['test']) 
+    // 
 
 }
 
