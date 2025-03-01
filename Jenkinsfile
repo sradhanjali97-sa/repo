@@ -1,42 +1,45 @@
-pipeline {
-          tools{
-		    jdk 'JAVA_HOME'
-                    maven 'M2_HOME'
-            }			
-    agent any
-
-     stages {
-        stage('git checkout') {
-            steps {
-		  git 'https://github.com/sradhanjali97-sa/repo.git'
-				
-                
-            }
-		}
-        stage('compile') {
-            steps {
-                sh 'mvn compile'
-            }
-        }
+pipeline{
+ tools{
+        jdk 'JAVA_HOME'
+        maven 'M2_HOME'
+    }
+     agent any
     
-        stage('test') {
-            steps {
-                sh 'mvn test'
-            }
+    stages{
+    
+    stage("checkout"){
+     steps{
+     git 'https://github.com/sradhanjali97-sa/repo.git'
+     }
+                    }
+  
+     stage("compile"){
+      steps{
+     sh 'mvn compile'
+    }
+    }
+       stage("test"){
+      steps{
+     sh 'mvn test'
+    }
+    }
+       stage("package"){
+      steps{
+     sh 'mvn clean package'
+                 sh "mv target/*.jar target/myweb.war"
 
-        } 
-        stage('package') {
-            steps {
-                sh 'mvn clean package'
-                 sh "mv target/*.jar target/myweb.jar"
-            }
-	}
-		   stage("deploy"){
-	   steps{
+    }
+    }
+       stage("deploy"){
+     steps{
+   
+          sshagent(['test']) 
+     {
+    
 
-      sshagent(['test']) {
-
-	        sh """
+    
+   
+        sh """
                  
             scp -o StrictHostKeyChecking=no target/myweb.war ec2-user@13.126.24.227:/home/ec2-user/tomcat10/webapps/
 
@@ -46,16 +49,11 @@ pipeline {
           
           """
 
- 
+
+
     
-	      
-
 }
-
-	   
-		}
-		  
-	  }
-        
-    }
-}
+  }
+  }
+   }
+ }
