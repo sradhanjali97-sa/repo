@@ -4,56 +4,41 @@ pipeline{
         maven 'M2_HOME'
     }
      agent any
-    
-    stages{
-    
-    stage("checkout"){
-     steps{
-     git 'https://github.com/sradhanjali97-sa/repo.git'
-     }
-                    }
-  
-     stage("compile"){
-      steps{
-     sh 'mvn compile'
-    }
-    }
+	  
+	  stages{
+	  
+	  stage("checkout"){
+	   steps{
+	   git 'https://github.com/sradhanjali97-sa/repo.git'
+	   }
+	                  }
+	
+	   stage("compile"){
+	    steps{
+		 sh 'mvn compile'
+		}
+		}
        stage("test"){
-      steps{
-     sh 'mvn test'
-    }
-    }
+	    steps{
+		 sh 'mvn test'
+		}
+		}
+	
        stage("package"){
-      steps{
-     sh 'mvn clean package'
-                 sh "mv target/*.jar target/myweb.war"
+	    steps{
+		 sh 'mvn clean package'
+                 sh "mv target/*.jar target/myweb.jar"
 
-    }
-    }
-       stage("deploy"){
-     steps{
-   
-          sshagent(['test']) 
-     {
-    
+		}
+		}
+stage(backup)
+		  {
+  steps{
 
-    
-   
-        sh """
-                 
-            scp -o StrictHostKeyChecking=no target/myweb.war ec2-user@15.206.189.154:/home/ec2-user/tomcat10/webapps/
-
-              ssh ec2-user@15.206.189.154 /home/ec2-user/tomcat10/bin/shutdown.sh
-              ssh ec2-user@15.206.189.154 /home/ec2-user/tomcat10/bin/startup.sh
-            
-          
-          """
-
-
-
-    
+	nexusArtifactUploader artifacts: [[artifactId: 'myweb', classifier: '', file: 'target/myweb.jar', type: 'jar']], credentialsId: 'nexus', groupId: 'com.idream', nexusUrl: '52.66.179.54:8081/repository/maven-releases/', nexusVersion: 'nexus2', protocol: 'http', repository: 'maven-releases', version: '1.5'
+	  
+  }
+	
 }
-  }
-  }
-   }
- }
+	}
+	}
